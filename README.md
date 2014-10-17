@@ -33,10 +33,16 @@ flume_monitor_source is a flume source plug-in for monitoring files under a spec
   
   `
 	value: com.minsheng.flume.source.MonitorDirectorySource
+	
 	description: the full qualified class name of flume_monitor_source.
+	
 	notice:
   `
   
-  || *Property Name* || *default* || *Description* ||
-  || monitor_dir || - || The directory under which all files under will be monitored. Files satisfying the condition will be parsed and send to the flume channel.|| 
+  
+   *Property Name*  | *default*  | *Description* 
+   :--------------- | :--------- | :---------------------------------
+   monitor_dir      |  -         | The directory under which all files under will be monitored. Files satisfying the condition will be parsed and send to the flume channel.
+   
+   
 
