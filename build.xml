@@ -1,0 +1,125 @@
+<?xml version="1.0" ?>
+<project name="flume_monitor_source" default="jar">
+  
+  <property name="base.dir" value="." />
+  <property name="src.dir" value="${basedir}/src" />
+  <property name="lib.dir" value="${basedir}/lib" />
+  <property name="build.classes" value="${basedir}/build/classes" />
+  <property name="version" value="0.1" />
+  <property name="name" value="flume-monitor-source" />
+  <property name="final.name" value="${name}-${version}" />  
+  <property name="final.jar" value="${base.dir}/dist/${final.name}.jar" />
+  <property name="test.final.name" value="test" />  
+  <property name="test.final.jar" value="${base.dir}/dist/${test.final.name}.jar" />
+ 
+ 
+  <property name="test.src.dir" value="${basedir}/test" />
+  <property name="test.lib.dir" value="${basedir}/test/lib" />
+  <property name="test.build.dir" value="${basedir}/build/test" />
+  <property name="test.build.classes" value="${basedir}/build/test/classes" />
+  <property name="test.log.dir" value="${basedir}/build/test/log" />
+  
+  <property name="test.include" value="Test*"/>
+  <property name="test.classpath.id" value="test.classpath"/>
+  <property name="test.output" value="no"/>
+  <property name="test.timeout" value="900000"/>
+  <property name="test.junit.output.format" value="plain"/>
+  <property name="test.junit.fork.mode" value="perTest" />
+  <property name="test.junit.printsummary" value="yes" />
+  <property name="test.junit.haltonfailure" value="no" />
+  <property name="test.junit.maxmemory" value="500m" />
+  
+  <path id="classpath">
+    <pathelement location="${build.classes}" />
+    <path refid="src.lib.classpath" />
+  </path>
+
+  <path id="src.lib.classpath">
+    <fileset dir="${lib.dir}">
+     <include name="**/*.jar" />
+    </fileset>
+  </path>  
+
+  <path id="test.classpath">
+    <pathelement location="${test.build.classes}" />
+    <pathelement location="${test.src.dir}"/>
+    <path refid="test.lib.classpath"/>
+    <pathelement location="${finale.name}.jar"/>
+    <path refid="classpath"/>
+  </path>
+  
+  <path id="test.lib.classpath">
+    <fileset dir="${test.lib.dir}">
+      <include name="**/*.jar"/>
+      <exclude name="**/excluded/"/>
+    </fileset>
+  </path>
+  
+  
+  <target name="init">
+    <mkdir dir="${build.classes}" />
+    <mkdir dir="${test.build.classes}" />
+    <mkdir dir="dist" />
+  </target>
+  
+  <target name="compile" depends="init" >
+    <javac srcdir="${src.dir}" destdir="${build.classes}" debug="true" >
+      <classpath refid="classpath" /> 
+    </javac>
+  </target>
+
+  <target name="jar" depends="compile" >
+    <jar destfile="${final.jar}" basedir="${build.classes}" />
+  </target>
+
+  <!--==================================== -->
+  
+  <target name="compile-test" depends="init">
+    <javac srcdir="${test.src.dir}" destdir="${test.build.classes}" debug="true" >
+    <classpath refid="test.classpath" />
+  </javac>
+  </target>
+  
+  <target name="test" depends="compile-test,compile">
+    <jar jarfile="${test.final.jar}" basedir="${test.build.classes}">
+  </jar>
+  </target>
+  
+  <macrodef name="test-runner">
+    <attribute name="test.file" />
+    <attribute name="classpath" />
+    <attribute name="test.target.dir" />
+    <sequential>
+      <delete file="${test.log.dir}" />
+      <mkdir dir="${test.log.dir}" />
+      <junit showoutput="yes"
+           printsummary="yes"
+           haltonfailure="true"
+       fork="yes"
+       forkmode="${test.junit.fork.mode}"
+       maxmemory="${test.junit.maxmemory}"
+       dir="${basedir}">
+      <sysproperty key="test.src.dir" value="${test.src.dir}" />
+    <sysproperty key="testjar" value="${test.final.jar}" />
+    <classpath refid="@{classpath}" />
+    <formatter type="${test.junit.output.format}" />
+    <batchtest todir="${test.build.dir}" >
+      <fileset dir="${test.src.dir}" includes="**/*.java" />
+    </batchtest>
+    </junit>
+  </sequential>
+  </macrodef>
+  
+  <target name="run-test" depends="test">
+    <test-runner test.file="${test.src.dir/all-tests}"
+        classpath="${test.classpath.id}"
+        test.target.dir="${test.build.dir}"> 
+  </test-runner>
+  </target>
+  <!--==================================== -->
+  <target name="clean" depends="init">
+    <delete dir="build" />
+    <delete dir="dist" />
+  </target>
+  
+</project>
