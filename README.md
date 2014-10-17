@@ -1,7 +1,12 @@
 flume_monitor_source
 ====================
 # What is 
-flume_monitor_source is a flume source plugin for monitoring files under a specified directory. It is different from the 'spooldir' source in flume, which the flume_monitor_source can incrementally read data from the specified directory in real time--that means the the file under the specified directory is writable(only append opertaion).
+flume_monitor_source is a flume source plug-in for monitoring files under a specified directory. It is different from the 'spooldir' source in flume in the following ways:
+1. The flume_monitor_source can incrementally read data from the specified directory in real time, which means the file under the specified directory is writeable (only append operation). This is not support by 'spooldir' source;
+2. The flume_monitor_source can handle the multiple lines such as Java call stack  or exception as ONE understandable complete record , while the flume can only handle one line per time;
+3.  The flume_monitor_source will process the file at the point which it had already processed when it was stopped at the last time.
+
+---
 
 # How to use it
 
@@ -18,5 +23,17 @@ flume_monitor_source is a flume source plugin for monitoring files under a speci
 ```
 
 # Configure the source
+
+## Prerequisites
+[FlumeUserGuide]: http://flume.apache.org/FlumeUserGuide.html
+   You are supposed to known how to use flume. See [Flume Documentation.][FlumeUserGuide] reference-style link
+   
+## Parameter List
+  type
+  `
+	value: com.minsheng.flume.source.MonitorDirectorySource
+	description: the full qualified class name of flume_monitor_source.
+	notice:
+  `
   
 
